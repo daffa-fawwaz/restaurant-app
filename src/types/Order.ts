@@ -47,3 +47,20 @@ export interface Order {
   table: OrderTable;
   items: OrderItem[];
 }
+
+export interface CreateOrderItem {
+  menuId: number;
+  quantity: number;
+  note?: string;
+}
+
+export type CreateOrderPayload = {
+  tableId: number;
+  source: string;
+  nameCustomer: string | null;
+  items: {
+    menuId: number;
+    quantity: number;
+    note?: string;
+  }[];
+};

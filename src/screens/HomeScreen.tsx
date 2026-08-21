@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -17,13 +18,19 @@ const formatRupiah = (value: number) => {
 };
 
 export default function HomeScreen() {
+  const [refreshing, setRefreshing] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (isRefresh = false) => {
     try {
-      setLoading(true);
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
+
       setError(null);
 
       const response = await getAllOrder();
@@ -33,7 +40,11 @@ export default function HomeScreen() {
       console.error("Failed to fetch orders:", error);
       setError("Gagal mengambil data order.");
     } finally {
-      setLoading(false);
+      if (isRefresh) {
+        setRefreshing(false);
+      } else {
+        setLoading(false);
+      }
     }
   };
 
@@ -67,6 +78,14 @@ export default function HomeScreen() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchOrders(true)}
+            colors={["#FF6900"]}
+            tintColor="#FF6900"
+          />
+        }
         contentContainerStyle={{
           paddingBottom: 120,
         }}
@@ -78,7 +97,6 @@ export default function HomeScreen() {
             Ringkasan aktivitas restaurant
           </Text>
         </View>
-
 
         <ScrollView
           horizontal
@@ -356,7 +374,6 @@ export default function HomeScreen() {
                                 size={20}
                                 color="#332C28"
                               />
-
                             </TouchableOpacity>
                           )}
 
