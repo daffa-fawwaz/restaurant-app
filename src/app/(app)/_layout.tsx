@@ -24,7 +24,7 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="order"
+        name="addOrder"
         options={{
           title: "Add",
           tabBarIcon: ({ color, size }) => (
