@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useRouter } from "expo-router";
+
 import { changeStatusOrder, getAllOrder } from "@/api/order";
 import { Order } from "@/types/Order";
 
@@ -22,6 +24,8 @@ export default function HomeScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const fetchOrders = async (isRefresh = false) => {
     try {
@@ -72,6 +76,15 @@ export default function HomeScreen() {
   const totalRevenue = orders
     .filter((order) => order.isPaid)
     .reduce((total, order) => total + Number(order.total), 0);
+
+  const handleCheckout = (orderId: number) => {
+    router.push({
+      pathname: "/(app)/checkout",
+      params: {
+        id: orderId.toString(),
+      },
+    });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#FFFEFC]">
@@ -378,14 +391,13 @@ export default function HomeScreen() {
                           )}
 
                           <TouchableOpacity
-                            onPress={() =>
-                              handleChangeStatus(
-                                order.id,
-                                order.status === "IN_PROGRESS"
-                                  ? "SERVED"
-                                  : "PAID",
-                              )
-                            }
+                            onPress={() => {
+                              if (order.status === "IN_PROGRESS") {
+                                handleChangeStatus(order.id, "SERVED");
+                              } else {
+                                handleCheckout(order.id);
+                              }
+                            }}
                             className="h-[50px] flex-1 flex-row items-center justify-center rounded-xl bg-[#FF6900]"
                             activeOpacity={0.8}
                           >

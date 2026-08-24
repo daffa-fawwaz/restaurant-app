@@ -32,6 +32,13 @@ export default function AppLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="checkout"
+        options={{
+          href: null,
+          tabBarStyle: { display: "none" },
+        }}
+      />
     </Tabs>
   );
 }
