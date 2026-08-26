@@ -56,13 +56,13 @@ export const createOrder = async (data: CreateOrderPayload) => {
   }
 };
 
-export const payOrder = async (id: number, amount: number) => {
+export const payOrder = async (id: number, amountReceived: number) => {
   try {
     const token = await AsyncStorage.getItem("token");
 
-    const response = await api.post(
-      `/order/${id}/pay`,
-      { amount },
+    const response = await api.patch(
+      `/order/${id}/payment`,
+      { amountReceived },
       {
         headers: {
           Authorization: `Bearer ${token}`,
